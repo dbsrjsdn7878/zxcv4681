@@ -93,12 +93,14 @@ if st.button("🔥 팀 배정 시작"):
         for p in player_data:
             position_groups[p["포지션"]].append((p["닉네임"], p["실력"]))
 
-        # 각 포지션별 균형 잡힌 팀 배정
+        # 각 포지션별 균형 잡힌 팀 배정 (팀이 계속 랜덤 변경됨)
         team1, team2 = [], []
         team1_score, team2_score = 0, 0
 
         for pos in positions:
             sorted_players = sorted(position_groups[pos], key=lambda x: x[1], reverse=True)
+            random.shuffle(sorted_players)  # 팀 배정을 매번 다르게 랜덤 섞기
+
             if len(sorted_players) < 2:
                 st.error(f"❗ {pos} 포지션에 플레이어가 부족합니다! (최소 2명 필요)")
                 break
