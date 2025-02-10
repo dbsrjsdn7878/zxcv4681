@@ -1,23 +1,51 @@
 import streamlit as st
 import random
+import itertools
 
-# 데이트 장소 데이터
-date_spots = {
-    "카페": ["스타벅스", "블루보틀", "할리스커피", "빽다방", "앤티크 감성 카페"],
-    "레스토랑": ["이탈리안 레스토랑", "스시 오마카세", "한정식 맛집", "바베큐 전문점", "베트남 쌀국수집"],
-    "공원": ["한강공원", "서울숲", "남산공원", "어린이대공원", "경의선 숲길"],
-    "액티비티": ["방탈출 카페", "VR 체험관", "보드게임 카페", "노래방", "클라이밍 체험장"],
-}
+st.title("⚔️ 롤 5대5 내전 팀 밸런스 자동 배정")
+st.write("친구들의 닉네임과 실력을 입력하면 자동으로 균형 잡힌 팀을 배정합니다!")
 
-# Streamlit UI
-st.title("💖 데이트 장소 추천기")
-st.write("오늘 어떤 장소에서 데이트하고 싶나요?")
+# 플레이어 입력 받기
+players = []
+skills = {}
 
-# 사용자 입력 받기
-category = st.selectbox("원하는 데이트 유형을 선택하세요", list(date_spots.keys()))
-indoor_outdoor = st.radio("실내/실외 선택", ["실내", "실외", "상관없음"])
+st.subheader("🔹 플레이어 입력")
+for i in range(10):
+    name = st.text_input(f"플레이어 {i+1} 닉네임", key=f"name_{i}")
+    skill = st.slider(f"{name} 실력 (1~10)", 1, 10, 5, key=f"skill_{i}")
+    if name:
+        players.append(name)
+        skills[name] = skill
 
-# 추천 버튼
-if st.button("데이트 장소 추천받기"):
-    recommended_place = random.choice(date_spots[category])
-    st.success(f"🎉 추천 장소: {recommended_place}")
+# 팀 배정 버튼
+if st.button("팀 배정 시작"):
+    if len(players) != 10:
+        st.error("❗ 10명의 플레이어 정보를 입력해주세요!")
+    else:
+        # 실력 기준으로 정렬
+        sorted_players = sorted(skills.items(), key=lambda x: x[1], reverse=True)
+        
+        # 균형 잡힌 팀 구성
+        team1, team2 = [], []
+        team1_score, team2_score = 0, 0
+
+        for name, skill in sorted_players:
+            if team1_score <= team2_score:
+                team1.append((name, skill))
+                team1_score += skill
+            else:
+                team2.append((name, skill))
+                team2_score += skill
+        
+        # 결과 출력
+        st.subheader("🔥 팀 배정 결과")
+        st.write(f"**팀 1 (총 실력 {team1_score})**")
+        for p in team1:
+            st.write(f"- {p[0]} (실력 {p[1]})")
+        
+        st.write(f"\n**팀 2 (총 실력 {team2_score})**")
+        for p in team2:
+            st.write(f"- {p[0]} (실력 {p[1]})")
+
+        # 최종 밸런스 점검
+        st.success(f"✅ 팀 간 실력 차이: {abs(team1_score - team2_score)}")
