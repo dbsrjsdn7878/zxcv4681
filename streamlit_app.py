@@ -1,27 +1,20 @@
 import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
-from pykrx import stock
 
-st.title("📈 한국 주식 데이터 시각화")
+st.title("🧮 간단한 계산기")
 
-# 주식 종목 코드 입력
-ticker = st.text_input("005930")
+num1 = st.number_input("첫 번째 숫자 입력", value=0)
+num2 = st.number_input("두 번째 숫자 입력", value=0)
 
-# 날짜 선택
-start_date = st.date_input("2024-10-31")
-end_date = st.date_input("2024-12-25")
+operation = st.radio("연산 선택", ["더하기", "빼기", "곱하기", "나누기"])
 
-if st.button("데이터 가져오기"):
-    df = stock.get_market_ohlcv_by_date(start_date.strftime("%Y%m%d"),
-                                        end_date.strftime("%Y%m%d"),
-                                        ticker)
+if st.button("계산하기"):
+    if operation == "더하기":
+        result = num1 + num2
+    elif operation == "빼기":
+        result = num1 - num2
+    elif operation == "곱하기":
+        result = num1 * num2
+    elif operation == "나누기":
+        result = num1 / num2 if num2 != 0 else "0으로 나눌 수 없음"
 
-    # 주가 차트
-    fig, ax = plt.subplots()
-    ax.plot(df.index, df["종가"], label="종가", color="blue")
-    ax.set_title(f"{ticker} 주가 추이")
-    ax.legend()
-    st.pyplot(fig)
-
-    st.write(df.tail())  # 최근 데이터 출력
+    st.success(f"결과: {result}")
