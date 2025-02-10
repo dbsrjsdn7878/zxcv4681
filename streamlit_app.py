@@ -106,13 +106,13 @@ if st.button("🔥 팀 배정 시작"):
             player1, player2 = sorted_players[:2]
 
             if team1_score <= team2_score:
-                team1.append({"닉네임": player1[0], "포지션": pos, "실력": player1[1]})
-                team2.append({"닉네임": player2[0], "포지션": pos, "실력": player2[1]})
+                team1.append({"닉네임": player1[0], "포지션": pos})
+                team2.append({"닉네임": player2[0], "포지션": pos})
                 team1_score += player1[1]
                 team2_score += player2[1]
             else:
-                team1.append({"닉네임": player2[0], "포지션": pos, "실력": player2[1]})
-                team2.append({"닉네임": player1[0], "포지션": pos, "실력": player1[1]})
+                team1.append({"닉네임": player2[0], "포지션": pos})
+                team2.append({"닉네임": player1[0], "포지션": pos})
                 team1_score += player2[1]
                 team2_score += player1[1]
 
